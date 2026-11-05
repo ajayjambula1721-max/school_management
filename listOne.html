@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Student | Student Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 26px 6%;
+        }
+
+        header h1 {
+            font-size: clamp(24px, 4vw, 32px);
+            margin-bottom: 7px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        nav {
+            background: white;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 14px 4%;
+            box-shadow: 0 2px 8px #0f172a0d;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .page-heading h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 28px;
+            box-shadow: 0 8px 25px #0f172a08;
+        }
+
+        .icon {
+            width: 55px;
+            height: 55px;
+            display: grid;
+            place-items: center;
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-radius: 13px;
+            font-size: 27px;
+            margin-bottom: 18px;
+        }
+
+        h3 {
+            font-size: 20px;
+            margin-bottom: 9px;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        form {
+            display: flex;
+            gap: 12px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb20;
+        }
+
+        button {
+            padding: 13px 20px;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #60a5fa;
+            outline-offset: 3px;
+        }
+
+        .search-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result-section h3 {
+            margin-bottom: 16px;
+        }
+
+        #status {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        #status[hidden] {
+            display: none;
+        }
+
+        #status.info {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        #status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        #status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 430px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #eff6ff;
+        }
+
+        th, td {
+            padding: 15px 17px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            color: #1e40af;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-number {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+
+        .footer-actions {
+            margin-top: 24px;
+        }
+
+        .home-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .home-btn:hover {
+            background: #cbd5e1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 16px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 24px 20px;
+            }
+
+            main {
+                margin: 26px auto;
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            form {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .form-group {
+                width: 100%;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎓 Student Management System</h1>
+        <p>Manage student records easily and efficiently.</p>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="list.html">List Students</a>
+        <a href="listOne.html" class="active" aria-current="page">Find Student</a>
+        <a href="insert.html">Add Student</a>
+        <a href="update.html">Update Student</a>
+        <a href="delete.html">Delete Student</a>
+    </nav>
+
+    <main>
+        <section class="page-heading">
+            <h2>Find a Student 🔍</h2>
+            <p>Search for an individual student using their student number.</p>
+        </section>
+
+        <section class="card">
+            <div class="icon" aria-hidden="true">👤</div>
+
+            <h3>Search Student Records</h3>
+            <p class="description">
+                Enter the student number below to retrieve the student's details
+                from your database.
+            </p>
+
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="sno">Student Number</label>
+                    <input
+                        type="number"
+                        id="sno"
+                        name="sno"
+                        placeholder="Enter student number"
+                        min="1"
+                        step="1"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="search-btn" id="searchBtn">
+                    🔍 Search Student
+                </button>
+            </form>
+
+            <div id="status" role="status" aria-live="polite" hidden></div>
+
+            <section class="result-section" aria-labelledby="resultTitle">
+                <h3 id="resultTitle">Student Details</h3>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Student Name</th>
+                                <th>Total Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTable">
+                            <tr>
+                                <td colspan="3" class="empty">
+                                    Enter a student number to view details.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="footer-actions">
+                <button
+                    type="button"
+                    class="home-btn"
+                    onclick="location.href='index.html'"
+                >
+                    ← Back to Home
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Student Management System | Built with HTML, CSS and JavaScript
+    </footer>
+
+    <script>
+        const searchForm = document.getElementById("searchForm");
+        const snoInput = document.getElementById("sno");
+        const searchBtn = document.getElementById("searchBtn");
+        const statusBox = document.getElementById("status");
+        const studentTable = document.getElementById("studentTable");
+
+        function showStatus(message, type) {
+            statusBox.textContent = message;
+            statusBox.className = type;
+            statusBox.hidden = false;
+        }
+
+        function showEmpty(message) {
+            studentTable.replaceChildren();
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 3;
+            cell.className = "empty";
+            cell.textContent = message;
+
+            row.appendChild(cell);
+            studentTable.appendChild(row);
+        }
+
+        function displayStudent(student) {
+            studentTable.replaceChildren();
+
+            const row = document.createElement("tr");
+
+            const idCell = document.createElement("td");
+            idCell.className = "student-number";
+            idCell.textContent = student.student_id ?? "";
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = student.student_name ?? "";
+
+            const totalCell = document.createElement("td");
+            totalCell.textContent = student.total ?? "";
+
+            row.append(idCell, nameCell, totalCell);
+            studentTable.appendChild(row);
+        }
+
+        searchForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const sno = snoInput.value.trim();
+            const number = Number(sno);
+
+            if (!sno || !Number.isSafeInteger(number) || number < 1) {
+                showStatus(
+                    "Please enter a valid positive student number.",
+                    "error"
+                );
+                snoInput.focus();
+                return;
+            }
+
+            searchBtn.disabled = true;
+            searchBtn.textContent = "Searching...";
+            showStatus("Searching student records...", "info");
+            showEmpty("Searching...");
+
+            try {
+                const response = await fetch(
+                    "/students/" + encodeURIComponent(sno)
+                );
+
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(
+                        message || "Unable to search for this student."
+                    );
+                }
+
+                const data = await response.json();
+
+                // Supports the array response used in the original code,
+                // as well as a single student object.
+                const student = Array.isArray(data) ? data[0] : data;
+
+                if (
+                    !student ||
+                    student.student_id == null
+                ) {
+                    showEmpty("No student record found.");
+                    showStatus(
+                        "No student found with number " + sno + ".",
+                        "error"
+                    );
+                    return;
+                }
+
+                displayStudent(student);
+
+                showStatus(
+                    "Student record retrieved successfully.",
+                    "success"
+                );
+
+            } catch (error) {
+                showEmpty("Student details could not be retrieved.");
+
+                showStatus(
+                    error.message ||
+                    "Unable to connect to the server. Please try again.",
+                    "error"
+                );
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.textContent = "🔍 Search Student";
+            }
+        });
+    </script>
+
+</body>
+</html>

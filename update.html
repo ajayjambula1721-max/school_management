@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student | Student Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 26px 6%;
+        }
+
+        header h1 {
+            font-size: clamp(24px, 4vw, 32px);
+            margin-bottom: 7px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        nav {
+            background: white;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 14px 4%;
+            box-shadow: 0 2px 8px #0f172a0d;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        main {
+            max-width: 680px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 25px #0f172a0a;
+        }
+
+        .icon {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-radius: 14px;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb20;
+        }
+
+        .hint {
+            display: block;
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        button {
+            padding: 13px 20px;
+            border: none;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #60a5fa;
+            outline-offset: 3px;
+        }
+
+        .update-btn {
+            background: #2563eb;
+            color: white;
+            flex: 1;
+        }
+
+        .update-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .cancel-btn:hover {
+            background: #cbd5e1;
+        }
+
+        #status {
+            padding: 13px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #status[hidden] {
+            display: none;
+        }
+
+        #status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        #status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        #status.info {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 16px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 24px 20px;
+            }
+
+            main {
+                margin: 26px auto;
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 23px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎓 Student Management System</h1>
+        <p>Manage student records easily and efficiently.</p>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="list.html">List Students</a>
+        <a href="listOne.html">Find Student</a>
+        <a href="insert.html">Add Student</a>
+        <a href="update.html" class="active" aria-current="page">Update Student</a>
+        <a href="delete.html">Delete Student</a>
+    </nav>
+
+    <main>
+        <section class="card">
+            <div class="icon" aria-hidden="true">✏️</div>
+
+            <h2>Update Student Details</h2>
+            <p class="description">
+                Enter the student number and the new details below.
+                The student number identifies the record to update.
+            </p>
+
+            <form id="updateForm">
+                <div class="form-group">
+                    <label for="sno">Student Number</label>
+                    <input
+                        type="number"
+                        id="sno"
+                        name="sno"
+                        placeholder="Enter student number"
+                        min="1"
+                        step="1"
+                        required
+                    >
+                    <span class="hint">
+                        Use the existing student number from your database.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Student Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter updated student name"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="total">Total Marks</label>
+                    <input
+                        type="number"
+                        id="total"
+                        name="total"
+                        placeholder="Enter updated total marks"
+                        min="0"
+                        step="any"
+                        required
+                    >
+                </div>
+
+                <div class="actions">
+                    <button
+                        type="submit"
+                        class="update-btn"
+                        id="updateBtn"
+                    >
+                        Save Changes
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        onclick="location.href='index.html'"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
+
+            <div id="status" role="status" aria-live="polite" hidden></div>
+        </section>
+    </main>
+
+    <footer>
+        Student Management System | Built with HTML, CSS and JavaScript
+    </footer>
+
+    <script>
+        const form = document.getElementById("updateForm");
+        const updateBtn = document.getElementById("updateBtn");
+        const statusBox = document.getElementById("status");
+
+        function showStatus(message, type) {
+            statusBox.textContent = message;
+            statusBox.className = type;
+            statusBox.hidden = false;
+        }
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const snoText = document.getElementById("sno").value.trim();
+            const name = document.getElementById("name").value.trim();
+            const totalText = document.getElementById("total").value.trim();
+
+            const sno = Number(snoText);
+            const total = Number(totalText);
+
+            if (!snoText || !Number.isSafeInteger(sno) || sno < 1) {
+                showStatus(
+                    "Please enter a valid positive student number.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!name) {
+                showStatus("Please enter the student's name.", "error");
+                return;
+            }
+
+            if (!totalText || !Number.isFinite(total) || total < 0) {
+                showStatus(
+                    "Please enter valid non-negative total marks.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!confirm(
+                "Update the details for student number " + sno + "?"
+            )) {
+                return;
+            }
+
+            updateBtn.disabled = true;
+            updateBtn.textContent = "Updating...";
+            statusBox.hidden = true;
+
+            try {
+                const response = await fetch(
+                    "/students/" + encodeURIComponent(sno),
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            total: total
+                        })
+                    }
+                );
+
+                const message = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(
+                        message || "Unable to update the student."
+                    );
+                }
+
+                showStatus(
+                    message || "Student details updated successfully.",
+                    "success"
+                );
+
+            } catch (error) {
+                showStatus(
+                    error.message ||
+                    "Unable to connect to the server. Please try again.",
+                    "error"
+                );
+            } finally {
+                updateBtn.disabled = false;
+                updateBtn.textContent = "Save Changes";
+            }
+        });
+    </script>
+
+</body>
+</html>

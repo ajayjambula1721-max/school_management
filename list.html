@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Records | Student Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 26px 6%;
+        }
+
+        header h1 {
+            font-size: clamp(24px, 4vw, 32px);
+            margin-bottom: 7px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        nav {
+            background: white;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 14px 4%;
+            box-shadow: 0 2px 8px #0f172a0d;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #334155;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 38px auto;
+            padding: 0 22px;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .page-heading h2 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px #0f172a08;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .toolbar h3 {
+            font-size: 18px;
+        }
+
+        .toolbar p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            min-width: 210px;
+            padding: 11px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb20;
+        }
+
+        button {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 470px;
+        }
+
+        thead {
+            background: #eff6ff;
+        }
+
+        th, td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            color: #1e40af;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .student-number {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        #status {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        #status[hidden] {
+            display: none;
+        }
+
+        #status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        #status.info {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        #status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px 15px;
+            color: #64748b;
+        }
+
+        .empty strong {
+            display: block;
+            color: #334155;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .footer-actions p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .home-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .home-btn:hover {
+            background: #cbd5e1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 16px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 24px 20px;
+            }
+
+            main {
+                margin: 26px auto;
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+
+            .toolbar, .controls {
+                width: 100%;
+            }
+
+            .controls input {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .refresh-btn {
+                width: 100%;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎓 Student Management System</h1>
+        <p>Manage student records easily and efficiently.</p>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="list.html" class="active" aria-current="page">List Students</a>
+        <a href="listOne.html">Find Student</a>
+        <a href="insert.html">Add Student</a>
+        <a href="update.html">Update Student</a>
+        <a href="delete.html">Delete Student</a>
+    </nav>
+
+    <main>
+        <section class="page-heading">
+            <h2>Student Records 📋</h2>
+            <p>View and search all student records stored in your database.</p>
+        </section>
+
+        <section class="card">
+            <div class="toolbar">
+                <div>
+                    <h3>All Students</h3>
+                    <p id="recordCount">Loading student records...</p>
+                </div>
+
+                <div class="controls">
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search by ID or name..."
+                        aria-label="Search students by ID or name"
+                    >
+                    <button
+                        type="button"
+                        class="refresh-btn"
+                        id="refreshBtn"
+                        onclick="loadStudents()"
+                    >
+                        ↻ Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div id="status" class="info" role="status" aria-live="polite">
+                Loading student records...
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Number</th>
+                            <th>Student Name</th>
+                            <th>Total Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="footer-actions">
+                <p>Student information retrieved from your database.</p>
+                <button
+                    type="button"
+                    class="home-btn"
+                    onclick="location.href='index.html'"
+                >
+                    ← Back to Home
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Student Management System | Built with HTML, CSS and JavaScript
+    </footer>
+
+    <script>
+        const studentTable = document.getElementById("studentTable");
+        const searchInput = document.getElementById("searchInput");
+        const statusBox = document.getElementById("status");
+        const recordCount = document.getElementById("recordCount");
+        const refreshBtn = document.getElementById("refreshBtn");
+
+        let students = [];
+
+        function showStatus(message, type) {
+            statusBox.textContent = message;
+            statusBox.className = type;
+            statusBox.hidden = false;
+        }
+
+        function createCell(value, className = "") {
+            const cell = document.createElement("td");
+            cell.textContent = value ?? "";
+
+            if (className) {
+                cell.className = className;
+            }
+
+            return cell;
+        }
+
+        function renderStudents() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            const filteredStudents = students.filter(student => {
+                const id = String(student.student_id ?? "").toLowerCase();
+                const name = String(student.student_name ?? "").toLowerCase();
+
+                return id.includes(query) || name.includes(query);
+            });
+
+            studentTable.replaceChildren();
+
+            recordCount.textContent =
+                `${filteredStudents.length} of ${students.length} student(s) shown`;
+
+            if (filteredStudents.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+
+                cell.colSpan = 3;
+                cell.className = "empty";
+
+                const title = document.createElement("strong");
+                title.textContent = students.length === 0
+                    ? "No student records found"
+                    : "No matching students";
+
+                const message = document.createElement("span");
+                message.textContent = students.length === 0
+                    ? "Add a student to see records here."
+                    : "Try a different student number or name.";
+
+                cell.append(title, message);
+                row.appendChild(cell);
+                studentTable.appendChild(row);
+
+                return;
+            }
+
+            filteredStudents.forEach(student => {
+                const row = document.createElement("tr");
+
+                row.appendChild(
+                    createCell(student.student_id, "student-number")
+                );
+                row.appendChild(createCell(student.student_name));
+                row.appendChild(createCell(student.total));
+
+                studentTable.appendChild(row);
+            });
+        }
+
+        async function loadStudents() {
+            refreshBtn.disabled = true;
+            refreshBtn.textContent = "Loading...";
+            showStatus("Loading student records...", "info");
+
+            try {
+                const response = await fetch("/students");
+
+                if (!response.ok) {
+                    throw new Error("Unable to retrieve student records.");
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error("Unexpected response from the server.");
+                }
+
+                students = data;
+
+                renderStudents();
+
+                showStatus(
+                    "Student records loaded successfully.",
+                    "success"
+                );
+            } catch (error) {
+                students = [];
+                studentTable.replaceChildren();
+                recordCount.textContent = "Unable to load records";
+
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+
+                cell.colSpan = 3;
+                cell.className = "empty";
+                cell.textContent = "Please check your server connection and try refreshing.";
+
+                row.appendChild(cell);
+                studentTable.appendChild(row);
+
+                showStatus(
+                    error.message || "Something went wrong.",
+                    "error"
+                );
+            } finally {
+                refreshBtn.disabled = false;
+                refreshBtn.textContent = "↻ Refresh";
+            }
+        }
+
+        searchInput.addEventListener("input", renderStudents);
+
+        loadStudents();
+    </script>
+
+</body>
+</html>
